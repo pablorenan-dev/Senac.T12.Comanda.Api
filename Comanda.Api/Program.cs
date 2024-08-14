@@ -13,12 +13,25 @@ builder.Services.AddDbContext<ComandaContexto>(config =>
     config.UseMySql(conexao, ServerVersion.Parse("10.4.28-MariaDB"));
 });
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAllOrigins",
+        builder =>
+        {
+            builder.WithOrigins("http://127.0.0.1:5500")
+                   .AllowAnyMethod()
+                   .AllowAnyHeader();
+        });
+});
+
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
+app.UseCors("AllowAllOrigins"); // Aplica a política CORS
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
