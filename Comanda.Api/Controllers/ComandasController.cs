@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Comanda.Api.Dtos_data_transfer_object_;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -11,6 +12,7 @@ namespace Comanda.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    //ComandasController é a Rota(ali encima)
     public class ComandasController : ControllerBase
     {
         private readonly ComandaContexto _context;
@@ -75,12 +77,25 @@ namespace Comanda.Api.Controllers
         // POST: api/Comandas
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<SistemaDeComandas.Modelos.Comanda>> PostComanda(SistemaDeComandas.Modelos.Comanda comanda)
+        //Dto significado Data Tranfer Object
+        public async Task<ActionResult<SistemaDeComandas.Modelos.Comanda>> PostComanda(ComandaDto comanda)
+            //comanda aqui eh o json
         {
-            _context.Comandas.Add(comanda);
+            // criando uma nova comanda
+
+            var novaComanda = new SistemaDeComandas.Modelos.Comanda()
+            {
+                NomeCliente = comanda.NomeCliente,
+                NumeroMesa = comanda.NumeroMesa
+            };
+
+            //adicionanado a comanda no banco de maneira asincrona
+            await _context.Comandas.AddAsync(novaComanda);
+
+            //salvando a comanda de maneira asincrona
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetComanda", new { id = comanda.Id }, comanda);
+            return CreatedAtAction("GetComanda", new { id = novaComanda.Id }, comanda);
         }
 
         // DELETE: api/Comandas/5

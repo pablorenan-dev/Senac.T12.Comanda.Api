@@ -11,8 +11,8 @@ using SistemaDeComandas.BancoDeDados;
 namespace Comanda.Api.Migrations
 {
     [DbContext(typeof(ComandaContexto))]
-    [Migration("20240813230432_teste02")]
-    partial class teste02
+    [Migration("20240820223215_RafaelExplicacao01")]
+    partial class RafaelExplicacao01
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -28,23 +28,23 @@ namespace Comanda.Api.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("INT");
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Descricao")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("VARCHAR(200)");
 
-                    b.Property<int>("PossuiPreparo")
-                        .HasColumnType("INTEGER");
+                    b.Property<bool>("PossuiPreparo")
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<decimal>("Preco")
-                        .HasColumnType("NUMERIC");
+                        .HasColumnType("DECIMAL(10,2)");
 
                     b.Property<string>("Titulo")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("VARCHAR(200)");
 
                     b.HasKey("Id");
 

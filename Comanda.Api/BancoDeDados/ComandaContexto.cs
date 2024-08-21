@@ -34,24 +34,19 @@ namespace SistemaDeComandas.BancoDeDados
             //forcar valores do CardapioItem(deixar anti-burro, se alguem mudar algum valor no Cardapio item(int -> string num ID)o valor continuara sendo INTEGER no banco. - START
             modelBuilder.Entity<CardapioItem>()
                 .Property(p => p.Id)
-                .HasColumnType("INTEGER");
+                .HasColumnType("INT");
 
             modelBuilder.Entity<CardapioItem>()
                 .Property(p => p.Titulo)
-                .HasColumnType("TEXT");
+                .HasColumnType("VARCHAR(200)");
 
             modelBuilder.Entity<CardapioItem>()
-                .Property(p => p.Titulo)
-                .HasColumnType("TEXT");
+                .Property(p => p.Descricao)
+                .HasColumnType("VARCHAR(200)");
 
             modelBuilder.Entity<CardapioItem>()
                 .Property(p => p.Preco)
-                .HasConversion<decimal>()
-                .HasColumnType("NUMERIC");
-
-            modelBuilder.Entity<CardapioItem>()
-                .Property(p => p.PossuiPreparo)
-                .HasColumnType("INTEGER");
+                .HasColumnType("DECIMAL(10,2)");
 
             //forcar valores do CardapioItem - END
 

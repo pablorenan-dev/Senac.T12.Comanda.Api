@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Comanda.Api.Migrations
 {
     /// <inheritdoc />
-    public partial class teste02 : Migration
+    public partial class RafaelExplicacao01 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -18,14 +18,14 @@ namespace Comanda.Api.Migrations
                 name: "CardapioItems",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                    Id = table.Column<int>(type: "INT", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Titulo = table.Column<string>(type: "TEXT", nullable: false)
+                    Titulo = table.Column<string>(type: "VARCHAR(200)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Descricao = table.Column<string>(type: "longtext", nullable: false)
+                    Descricao = table.Column<string>(type: "VARCHAR(200)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Preco = table.Column<decimal>(type: "NUMERIC(65,30)", nullable: false),
-                    PossuiPreparo = table.Column<int>(type: "INTEGER", nullable: false)
+                    Preco = table.Column<decimal>(type: "DECIMAL(10,2)", nullable: false),
+                    PossuiPreparo = table.Column<bool>(type: "tinyint(1)", nullable: false)
                 },
                 constraints: table =>
                 {
