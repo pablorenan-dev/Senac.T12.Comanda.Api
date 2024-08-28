@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Comanda.Api.Migrations
 {
     /// <inheritdoc />
-    public partial class RafaelExplicacao01 : Migration
+    public partial class Primeira_Versao : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -18,13 +18,13 @@ namespace Comanda.Api.Migrations
                 name: "CardapioItems",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INT", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Titulo = table.Column<string>(type: "VARCHAR(200)", nullable: false)
+                    Titulo = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Descricao = table.Column<string>(type: "VARCHAR(200)", nullable: false)
+                    Descricao = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Preco = table.Column<decimal>(type: "DECIMAL(10,2)", nullable: false),
+                    Preco = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
                     PossuiPreparo = table.Column<bool>(type: "tinyint(1)", nullable: false)
                 },
                 constraints: table =>
@@ -37,12 +37,12 @@ namespace Comanda.Api.Migrations
                 name: "Comandas",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    NumeroMesa = table.Column<int>(type: "INTEGER", nullable: false),
-                    NomeCliente = table.Column<string>(type: "TEXT", nullable: false)
+                    NumeroMesa = table.Column<int>(type: "int", nullable: false),
+                    NomeCliente = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    SituacaoComanda = table.Column<int>(type: "INTEGER", nullable: false)
+                    SituacaoComanda = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -69,10 +69,10 @@ namespace Comanda.Api.Migrations
                 name: "PedidoCozinhas",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    ComandaId = table.Column<int>(type: "INTEGER", nullable: false),
-                    SituacaoId = table.Column<int>(type: "INTEGER", nullable: false)
+                    ComandaId = table.Column<int>(type: "int", nullable: false),
+                    SituacaoId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -104,10 +104,10 @@ namespace Comanda.Api.Migrations
                 name: "ComandaItems",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    CardapioItemId = table.Column<int>(type: "INTEGER", nullable: false),
-                    ComandaId = table.Column<int>(type: "INTEGER", nullable: false)
+                    CardapioItemId = table.Column<int>(type: "int", nullable: false),
+                    ComandaId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -119,8 +119,8 @@ namespace Comanda.Api.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ComandaItems_Comandas_CardapioItemId",
-                        column: x => x.CardapioItemId,
+                        name: "FK_ComandaItems_Comandas_ComandaId",
+                        column: x => x.ComandaId,
                         principalTable: "Comandas",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -131,10 +131,10 @@ namespace Comanda.Api.Migrations
                 name: "PedidoCozinhaItems",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    PedidoCozinhaId = table.Column<int>(type: "INTEGER", nullable: false),
-                    ComandaItemId = table.Column<int>(type: "INTEGER", nullable: false)
+                    PedidoCozinhaId = table.Column<int>(type: "int", nullable: false),
+                    ComandaItemId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -158,6 +158,11 @@ namespace Comanda.Api.Migrations
                 name: "IX_ComandaItems_CardapioItemId",
                 table: "ComandaItems",
                 column: "CardapioItemId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ComandaItems_ComandaId",
+                table: "ComandaItems",
+                column: "ComandaId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PedidoCozinhaItems_ComandaItemId",

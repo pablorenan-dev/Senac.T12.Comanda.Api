@@ -87,10 +87,20 @@ namespace Comanda.Api.Controllers
             {
                 NomeCliente = comanda.NomeCliente,
                 NumeroMesa = comanda.NumeroMesa
-            };
+            };            
 
             //adicionanado a comanda no banco de maneira asincrona
             await _context.Comandas.AddAsync(novaComanda);
+
+            //var cardapioItem = await _context.CardapioItems.FindAsync(comanda.CardapioItems[0]);
+            var novoItemComanda = new SistemaDeComandas.Modelos.ComandaItem()
+            {
+                Comanda = novaComanda,
+                CardapioItemId = comanda.CardapioItems[0]
+            };
+
+            // adicionando o novo item na comanda
+            await _context.ComandaItems.AddAsync(novoItemComanda);
 
             //salvando a comanda de maneira asincrona
             await _context.SaveChangesAsync();
