@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SistemaDeComandas.BancoDeDados;
+using SistemaDeComandas.Modelos;
 
 namespace Comanda.Api.Controllers
 {
@@ -46,14 +47,35 @@ namespace Comanda.Api.Controllers
         // PUT: api/Comandas/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutComanda(int id, SistemaDeComandas.Modelos.Comanda comanda)
+        public async Task<IActionResult> PutComanda(int id, ComandaUpdateDto comanda)
         {
             if (id != comanda.Id)
             {
                 return BadRequest();
             }
+            // SELECT * FROM Comandas WHERE id = **idInformado**
+            var comandaUpdate = await _context.Comandas
+                .FirstAsync(c => c.Id == id);
 
-            _context.Entry(comanda).State = EntityState.Modified;
+            if (comanda.NumeroMesa > 0)
+            {
+                comandaUpdate.NumeroMesa = comanda.NumeroMesa;
+            }
+            if(!string.IsNullOrEmpty(comanda.NomeCliente))
+            {
+                comandaUpdate.NomeCliente = comanda.NomeCliente;
+            }
+
+            foreach(var item in comanda.CardapioItems)
+            {
+                var novoComandaItem = new ComandaItem()
+                {
+                    Comanda = comandaUpdate,
+                    CardapioItemId = item
+                };
+
+                await _context.ComandaItems.AddAsync(novoComandaItem);
+            }
 
             try
             {
@@ -92,15 +114,18 @@ namespace Comanda.Api.Controllers
             //adicionanado a comanda no banco de maneira asincrona
             await _context.Comandas.AddAsync(novaComanda);
 
-            //var cardapioItem = await _context.CardapioItems.FindAsync(comanda.CardapioItems[0]);
-            var novoItemComanda = new SistemaDeComandas.Modelos.ComandaItem()
+            foreach(var item in comanda.CardapioItems)
             {
-                Comanda = novaComanda,
-                CardapioItemId = comanda.CardapioItems[0]
-            };
+                //var cardapioItem = await _context.CardapioItems.FindAsync(comanda.CardapioItems[0]);
+                var novoItemComanda = new SistemaDeComandas.Modelos.ComandaItem()
+                {
+                    Comanda = novaComanda,
+                    CardapioItemId = item
+                };
 
-            // adicionando o novo item na comanda
-            await _context.ComandaItems.AddAsync(novoItemComanda);
+                // adicionando o novo item na comanda
+                await _context.ComandaItems.AddAsync(novoItemComanda);
+            }
 
             //salvando a comanda de maneira asincrona
             await _context.SaveChangesAsync();
