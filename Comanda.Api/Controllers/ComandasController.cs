@@ -147,10 +147,35 @@ namespace Comanda.Api.Controllers
 
                 // adicionando o novo item na comanda
                 await _context.ComandaItems.AddAsync(novoItemComanda);
+
+                // verificar se o cardapio possui preparo
+                // SELECT PossuiPreparo From Cardapioitem Where id = <item>
+                // Find pode retornar nulo
+                // First nao retorna nulo, pega sempre o primeiro
+                var Cardapioitem = await _context.CardapioItems.FindAsync(item);
+                var PossuiPreparo = Cardapioitem.PossuiPreparo;
+
+                if (PossuiPreparo)
+                {
+                    var novoPedidoCozinha = new PedidoCozinha()
+                    {
+                        Comanda = novaComanda,
+                        SituacaoId = 1 //1 === Pendente
+                    };
+                    // INSERT INTO PedidoCozinha (Id, ComandaId, Situacaoid) VALUES (1,6,1)
+                    await _context.PedidoCozinhas.AddAsync(novoPedidoCozinha);
+                    var novoPedidoCozinhaIten = new PedidoCozinhaItem()
+                    {
+                        PedidoCozinha = novoPedidoCozinha,
+                        ComandaItem = novoItemComanda
+                    };
+                    await _context.PedidoCozinhaItems.AddAsync(novoPedidoCozinhaIten);
+                }
             }
 
             //salvando a comanda de maneira asincrona
             await _context.SaveChangesAsync();
+            
 
             return CreatedAtAction("GetComanda", new { id = novaComanda.Id }, comanda);
         }
