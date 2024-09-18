@@ -97,6 +97,26 @@ namespace Comanda.Api.Controllers
                 };
 
                 await _context.ComandaItems.AddAsync(novoComandaItem);
+
+                var CardapioItem = await _context.CardapioItems.FindAsync(item);
+                var PossuiPreparo = CardapioItem.PossuiPreparo;
+                if (PossuiPreparo)
+                {
+                    var novoPedidoCozinha = new PedidoCozinha()
+                    {
+                        Comanda = comandaUpdate,
+                        SituacaoId = 1
+                    };
+                    await _context.PedidoCozinhas.AddAsync(novoPedidoCozinha);
+
+                    var novoPedidoCozinhaItem = new PedidoCozinhaItem()
+                    {
+                        PedidoCozinha = novoPedidoCozinha,
+                        ComandaItem = novoComandaItem,
+                        
+                    };
+                    await _context.PedidoCozinhaItems.AddAsync(novoPedidoCozinhaItem);
+                }
             }
 
             try
