@@ -56,7 +56,7 @@ namespace SistemaDeComandas.BancoDeDados
                 .HasForeignKey(pci => pci.PedidoCozinhaId);
 
             modelBuilder.Entity<PedidoCozinhaItem>()
-                .HasOne(tico => tico.PedidoCozinha)
+                .HasOne(pci => pci.PedidoCozinha)
                 .WithMany(tico => tico.PedidoCozinhaItems)
                 .HasForeignKey(teco => teco.PedidoCozinhaId);
 
