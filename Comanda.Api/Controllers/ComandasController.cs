@@ -149,6 +149,12 @@ namespace Comanda.Api.Controllers
                 await _context.ComandaItems.AddAsync(novoItemComanda);
             }
 
+
+
+
+
+
+
             //salvando a comanda de maneira asincrona
             await _context.SaveChangesAsync();
 
