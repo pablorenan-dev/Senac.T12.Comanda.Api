@@ -182,6 +182,7 @@ namespace Comanda.Api.Controllers
                         Comanda = novaComanda,
                         SituacaoId = 1 //1 === Pendente
                     };
+
                     // INSERT INTO PedidoCozinha (Id, ComandaId, Situacaoid) VALUES (1,6,1)
                     await _context.PedidoCozinhas.AddAsync(novoPedidoCozinha);
                     var novoPedidoCozinhaIten = new PedidoCozinhaItem()
