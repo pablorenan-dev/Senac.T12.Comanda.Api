@@ -1,3 +1,4 @@
+using Comanda.Api;
 using Microsoft.EntityFrameworkCore;
 using SistemaDeComandas.BancoDeDados;
 
@@ -30,6 +31,21 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
+// AQUI A CRIACAO DO BANCO
+// essas linhas de codigo vao criar o banco, ele vai fazer o migrate para mim automaticamente
+// nao preciso mais usar Add-Migraion, UpdateDatabase...
+using(var e = app.Services.CreateScope())
+{
+    // obtendo todas as tabelas do banco
+    var banco = e.ServiceProvider.GetRequiredService<ComandaContexto>();
+
+    banco.Database.Migrate();
+    // Semear os dados inicias
+    InicializarDados.Semear(banco);
+}
+
+
 
 app.UseCors("AllowAllOrigins"); // Aplica a política CORS
 
