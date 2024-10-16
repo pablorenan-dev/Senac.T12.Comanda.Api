@@ -16,26 +16,33 @@ namespace Comanda.Api
                     // aq n ta Vermelho
                     new CardapioItem()
                     {
-                        Descricao = "XIS RATO",
+                        Descricao = "mickey",
                         PossuiPreparo = true,
                         // M eh pra deixar decimal
                         Preco = 20.00M,
-                        Titulo = ""
+                        Titulo = "XIS RATO"
                     },
                     new CardapioItem()
                     {
-                        Descricao = "XIS URUBU",
+                        Descricao = "bom",
                         PossuiPreparo = true,
                         Preco = 15.00M,
-                        Titulo = ""
+                        Titulo = "XIS URUBU"
                     },
                     new CardapioItem()
                     {
-                        Descricao = "AGUA CLORIFICADA",
+                        Descricao = "gostosa",
                         PossuiPreparo = false,
                         Preco = 7.00M,
-                        Titulo = ""
-                    }
+                        Titulo = "AGUA CLORIFICADA"
+                    },
+                     new CardapioItem()
+                     {
+                         Descricao = "potassio",
+                         PossuiPreparo = false,
+                         Preco = 5.00M,
+                         Titulo = "BANANA"
+                     }
                     );
             }
             // INSERT INTO Cardapio (Columns) VALUES(1, "SALSICHA")
@@ -89,10 +96,9 @@ namespace Comanda.Api
                 var comanda = new SistemaDeComandas.Modelos.Comanda() { NomeCliente = "Keller", NumeroMesa = 1, SituacaoComanda = 1};
                 banco.Comandas.Add(comanda );
 
-                if (!banco.ComandaItems.Any())
-                {
-                    banco.ComandaItems.AddRange(
-                        new ComandaItem()
+                // array com todas as comandas pre setadas
+                ComandaItem[] listaArrayItem = {
+                     new ComandaItem()
                         {
                             Comanda = comanda,
                             CardapioItemId = 1
@@ -102,8 +108,26 @@ namespace Comanda.Api
                             Comanda = comanda,
                             CardapioItemId = 2
                         }
-                        );
+                    };
+
+                if (!banco.ComandaItems.Any())
+                {
+
+                    // Add Range eh pra adicionar mais de um
+                    banco.ComandaItems.AddRange(listaArrayItem);
                 }
+                var pedidoCozinha1 = new PedidoCozinha() { Comanda = comanda };
+                var pedidoCozinha2 = new PedidoCozinha() { Comanda = comanda };
+
+                PedidoCozinhaItem[] pedidoCozinhaItems =
+                {
+                    new PedidoCozinhaItem{PedidoCozinha = pedidoCozinha1, ComandaItem = listaArrayItem[0]},
+                    new PedidoCozinhaItem{PedidoCozinha = pedidoCozinha2, ComandaItem = listaArrayItem[1]}
+                };
+
+                banco.PedidoCozinhas.Add(pedidoCozinha1);
+                banco.PedidoCozinhas.Add(pedidoCozinha2);
+                banco.PedidoCozinhaItems.AddRange(pedidoCozinhaItems);
             }
 
             banco.SaveChanges();
