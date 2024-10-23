@@ -25,9 +25,26 @@ namespace Comanda.Api.Controllers
 
         // GET: api/Comandas
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<SistemaDeComandas.Modelos.Comanda>>> GetComandas()
+        public async Task<ActionResult<IEnumerable<ComandaGetDto>>> GetComandas()
         {
-            return await _context.Comandas.ToListAsync();
+            //SELECT c.NumeroMesa, c.NomeCliente FROM Comandas WHERE SituacaoComanda = 1
+            var resultComandas = await _context.Comandas
+                .Where(c => c.SituacaoComanda == 1)
+                .Select(c => new ComandaGetDto
+                {
+                    Id = c.Id,
+                    NumeroMesa = c.NumeroMesa,
+                    NomeCliente = c.NomeCliente,
+                    ComandaItens = c.ComandaItems.Select(ci => new ComandaItensGetDto
+                                    {
+                                        Id = ci.Id,
+                                        Titulo = ci.CardapioItem.Titulo,
+                                    }
+                                    ).ToList()
+                }) 
+                .ToListAsync();
+            //retorna o conteudo com a lista de comandas
+            return Ok(resultComandas);
         }
 
         // GET: api/Comandas/5
@@ -37,7 +54,7 @@ namespace Comanda.Api.Controllers
             // SELECT * FROM Comandas WHERE Id = {id que eu passar la}
             // busca a comanda por id
             var comanda = await _context.Comandas
-                                        .FirstOrDefaultAsync(c=>c.Id == id);
+                                        .FirstOrDefaultAsync(c => c.Id == id);
 
             if (comanda == null)
             {
@@ -59,7 +76,7 @@ namespace Comanda.Api.Controllers
                                     {
                                         Id = cii.Id,
                                         Titulo = cii.CardapioItem.Titulo
-                                    })  
+                                    })
                                            .ToListAsync();
             comandaDto.ComandaItens = comandaItensDto;
 
@@ -83,12 +100,12 @@ namespace Comanda.Api.Controllers
             {
                 comandaUpdate.NumeroMesa = comanda.NumeroMesa;
             }
-            if(!string.IsNullOrEmpty(comanda.NomeCliente))
+            if (!string.IsNullOrEmpty(comanda.NomeCliente))
             {
                 comandaUpdate.NomeCliente = comanda.NomeCliente;
             }
 
-            foreach(var item in comanda.CardapioItems)
+            foreach (var item in comanda.CardapioItems)
             {
                 var novoComandaItem = new ComandaItem()
                 {
@@ -113,7 +130,7 @@ namespace Comanda.Api.Controllers
                     {
                         PedidoCozinha = novoPedidoCozinha,
                         ComandaItem = novoComandaItem,
-                        
+
                     };
                     await _context.PedidoCozinhaItems.AddAsync(novoPedidoCozinhaItem);
                 }
@@ -143,7 +160,7 @@ namespace Comanda.Api.Controllers
         [HttpPost]
         //Dto significado Data Tranfer Object
         public async Task<ActionResult<SistemaDeComandas.Modelos.Comanda>> PostComanda(ComandaDto comanda)
-            //comanda aqui eh o json
+        //comanda aqui eh o json
         {
             // criando uma nova comanda
 
@@ -151,12 +168,12 @@ namespace Comanda.Api.Controllers
             {
                 NomeCliente = comanda.NomeCliente,
                 NumeroMesa = comanda.NumeroMesa
-            };            
+            };
 
             //adicionanado a comanda no banco de maneira asincrona
             await _context.Comandas.AddAsync(novaComanda);
 
-            foreach(var item in comanda.CardapioItems)
+            foreach (var item in comanda.CardapioItems)
             {
                 //var cardapioItem = await _context.CardapioItems.FindAsync(comanda.CardapioItems[0]);
                 var novoItemComanda = new SistemaDeComandas.Modelos.ComandaItem()
@@ -202,7 +219,7 @@ namespace Comanda.Api.Controllers
 
             //salvando a comanda de maneira asincrona
             await _context.SaveChangesAsync();
-            
+
 
             return CreatedAtAction("GetComanda", new { id = novaComanda.Id }, comanda);
         }
@@ -220,6 +237,23 @@ namespace Comanda.Api.Controllers
             _context.Comandas.Remove(comanda);
             await _context.SaveChangesAsync();
 
+            return NoContent();
+        }
+        //api/comanda/{id}
+        [HttpPatch("{id}")]
+        public async Task<IActionResult> PatchComanda(int id)
+        {
+            //consulta a comanda SELECT * from Comandas WHERE id = {id}
+            var comanda = await _context.Comandas.FindAsync(id);
+            if (comanda == null)
+                //retorna um 404
+                return NotFound();
+            //alteracao comanda
+
+            comanda.SituacaoComanda = 2;
+            //UPDATE Comandas SET SituacaoComanda = 2 WHERE id = {id}
+            await _context.SaveChangesAsync();
+            //retorna um 204
             return NoContent();
         }
 
