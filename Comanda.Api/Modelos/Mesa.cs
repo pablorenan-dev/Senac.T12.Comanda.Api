@@ -9,7 +9,7 @@ namespace SistemaDeComandas.Modelos
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
+        public int IdMesa { get; set; }
         public int NumeroMesa { get; set; }
         public int SituacaoMesa { get; set; }
     }

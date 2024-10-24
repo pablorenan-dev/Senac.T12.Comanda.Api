@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Comanda.Api.Migrations
 {
     /// <inheritdoc />
-    public partial class Primeira_Versao : Migration
+    public partial class criacao : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -54,29 +54,14 @@ namespace Comanda.Api.Migrations
                 name: "Mesas",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    IdMesa = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     NumeroMesa = table.Column<int>(type: "int", nullable: false),
                     SituacaoMesa = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Mesas", x => x.Id);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
-                name: "PedidoCozinhas",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    ComandaId = table.Column<int>(type: "int", nullable: false),
-                    SituacaoId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PedidoCozinhas", x => x.Id);
+                    table.PrimaryKey("PK_Mesas", x => x.IdMesa);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -120,6 +105,27 @@ namespace Comanda.Api.Migrations
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_ComandaItems_Comandas_ComandaId",
+                        column: x => x.ComandaId,
+                        principalTable: "Comandas",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "PedidoCozinhas",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    ComandaId = table.Column<int>(type: "int", nullable: false),
+                    SituacaoId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PedidoCozinhas", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_PedidoCozinhas_Comandas_ComandaId",
                         column: x => x.ComandaId,
                         principalTable: "Comandas",
                         principalColumn: "Id",
@@ -173,6 +179,11 @@ namespace Comanda.Api.Migrations
                 name: "IX_PedidoCozinhaItems_PedidoCozinhaId",
                 table: "PedidoCozinhaItems",
                 column: "PedidoCozinhaId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PedidoCozinhas_ComandaId",
+                table: "PedidoCozinhas",
+                column: "ComandaId");
         }
 
         /// <inheritdoc />

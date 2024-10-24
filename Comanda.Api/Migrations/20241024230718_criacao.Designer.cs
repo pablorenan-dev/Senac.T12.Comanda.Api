@@ -11,8 +11,8 @@ using SistemaDeComandas.BancoDeDados;
 namespace Comanda.Api.Migrations
 {
     [DbContext(typeof(ComandaContexto))]
-    [Migration("20240927215744_cu")]
-    partial class cu
+    [Migration("20241024230718_criacao")]
+    partial class criacao
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -99,11 +99,11 @@ namespace Comanda.Api.Migrations
 
             modelBuilder.Entity("SistemaDeComandas.Modelos.Mesa", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("IdMesa")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("IdMesa"));
 
                     b.Property<int>("NumeroMesa")
                         .HasColumnType("int");
@@ -111,7 +111,7 @@ namespace Comanda.Api.Migrations
                     b.Property<int>("SituacaoMesa")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.HasKey("IdMesa");
 
                     b.ToTable("Mesas");
                 });

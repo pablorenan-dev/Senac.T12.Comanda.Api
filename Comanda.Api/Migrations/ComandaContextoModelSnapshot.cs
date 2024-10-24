@@ -96,11 +96,11 @@ namespace Comanda.Api.Migrations
 
             modelBuilder.Entity("SistemaDeComandas.Modelos.Mesa", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("IdMesa")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("IdMesa"));
 
                     b.Property<int>("NumeroMesa")
                         .HasColumnType("int");
@@ -108,7 +108,7 @@ namespace Comanda.Api.Migrations
                     b.Property<int>("SituacaoMesa")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.HasKey("IdMesa");
 
                     b.ToTable("Mesas");
                 });
