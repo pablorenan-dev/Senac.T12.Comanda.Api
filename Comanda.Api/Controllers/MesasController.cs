@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using SistemaDeComandas.BancoDeDados;
 using SistemaDeComandas.Modelos;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Comanda.Api.Controllers
 {
@@ -23,15 +24,21 @@ namespace Comanda.Api.Controllers
             return await _context.Mesas.ToListAsync();
         }
         // GET: api/Usuarios/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Mesa>> GetMesa(int id)
+        [HttpGet("{numeroMesa}")]
+        public async Task<ActionResult<Mesa>> GetMesa(int numeroMesa)
         {
-            var mesa = await _context.Mesas.FindAsync(id);
+            var mesa = _context.Mesas.FirstOrDefault(m => m.NumeroMesa == numeroMesa);
 
             if (mesa == null)
             {
-                return NotFound();
+                return BadRequest("Mesa não encontrada");
+
             }
+
+            //if (mesa == null)
+            //{
+            //    return NotFound();
+            //}
 
             return mesa;
         }
@@ -40,10 +47,17 @@ namespace Comanda.Api.Controllers
         [HttpPost]
         public async Task<ActionResult<Mesa>> PostMesa(Mesa mesa)
         {
-            _context.Mesas.Add(mesa);
-            await _context.SaveChangesAsync();
+            //verificar se uma mesa com esse numeroMesa ja existe
+            var mesaNoBanco = _context.Mesas.FirstOrDefault(m => m.NumeroMesa == mesa.NumeroMesa);
+            if(mesaNoBanco == null)
+            {
+                _context.Mesas.Add(mesa);
+                await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetMesa", new { id = mesa.IdMesa }, mesa);
+                return CreatedAtAction("GetMesa", new { id = mesa.IdMesa }, mesa);
+            }
+            return BadRequest("Uma mesa com esse numero ja existe xdd.");
+            
         }
         // DELETE: api/Usuarios/5
         [HttpDelete("{id}")]
